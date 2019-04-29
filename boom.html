@@ -1,0 +1,93 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>爆炸效果</title>
+<style>
+	body{
+		margin:0;
+		padding:0;
+		overflow:hidden;
+	}
+	#outer
+	{
+		width:640px;
+		height:400px;
+		border:1px solid #000;
+		position:absolute;
+		left:calc(50% - 320px);
+		top:calc(50% - 200px);	
+	}
+	#outer>div
+	{
+		position:absolute;
+		top:0;
+		left:0;
+		width:100%;
+		height:100%;
+		transform-style:preserve-3d;
+	}
+	#outer>div>div
+	{
+		position:absolute;
+		transform:perspective(500px);
+	}
+</style>
+</head>
+
+<body>
+	<div id="outer">
+    </div>
+    
+    <script>
+	
+	var arr=['1.jpg','2.jpg','3.jpg','4.jpg'];
+	var index=1;
+	zIn=999999;
+	
+	bump(8,5);
+	function bump(x,y){
+		//生成布局
+		var inner=document.createElement('div');
+		inner.style.zIndex=zIn;
+		zIn--;
+		outer.appendChild(inner);
+		for(var i=0;i<x;i++){
+			for(var j=0;j<y;j++){
+				var oDiv=document.createElement('div');
+				oDiv.style.width=inner.clientWidth/x+'px';
+				oDiv.style.height=inner.clientHeight/y+'px';
+				oDiv.style.left=inner.clientWidth/x*i+'px';
+				oDiv.style.top=inner.clientHeight/y*j+'px';
+				oDiv.style.backgroundPositionY=-inner.clientHeight/y*j+'px';
+				oDiv.style.backgroundPositionX=-inner.clientWidth/x*i+'px';
+				oDiv.style.transition=(Math.random()*1+1)+'s';
+				oDiv.style.backgroundImage='url(' + index + '.jpg)';
+				inner.appendChild(oDiv);
+			}
+		}
+		
+		//多图片爆炸
+		var oDivs=inner.children;
+		setTimeout(()=>{
+			index++;
+			(index==(arr.length+1))&&(index=1);
+			bump(8,5); //生成布局后，需等待2s,所以可以继续后面的操作
+			for(var k=0;k<oDivs.length;k++){
+				oDivs[k].style.transform='perspective(500px) translateX(' + (Math.random()*400-200) + 'px) translateY(' + (Math.random()*400-200) + 'px)  rotateX(' + (Math.random()*360-180) + 'deg) rotateY(' + (Math.random()*360-180) + 'deg) rotateZ(' + 
+				(Math.random()*200+100) + 'deg)';
+				oDivs[k].style.opacity=0;
+			}
+		},2000)
+		
+
+		
+		//清除布局
+		setTimeout(()=>{
+			outer.removeChild(inner);
+		},4000);	
+	}
+
+	</script>
+</body>
+</html>
